@@ -1,0 +1,90 @@
+theme change color 
+
+first 
+
+:root {
+    --primary:#001A23;
+    --white: #ffffff;
+    --black:#000000;
+    --secondary:#31493C;
+    --teritary:#07b657;
+    --background:#B3EFB2;
+    --card:#E8F1F2;
+
+  }
+black
+  .black {
+    --primary:#001A23;
+    --white: #ffffff;
+    --black:#000000;
+    --secondary:black;
+    --teritary:#07b657;
+    --background:whitesmoke;
+    --card:#E8F1F2;
+
+  }  
+
+  third
+
+  .blueviolet{
+    -primary: #001A23;
+    --white: #ffffff;
+    --black: #000000;
+    --secondary: blueviolet;
+    --teritary: blue;
+    --background: #f3ecfa;
+    --card: #E8F1F2;
+  }
+
+  fourth 
+
+  .crimson{
+    -primary: #001A23;
+    --white: #ffffff;
+    --black: #000000;
+    --secondary: crimson;
+    --teritary: tomato;
+    --background: #ffebee;
+    --card: #E8F1F2;
+  }
+
+  fifth
+  .teal{
+    --primary: #001A23;
+    --white: #ffffff;
+    --black: #000000;
+    --secondary: teal;
+    --teritary: #0dcaf0;
+    --background: #07868629;
+    --card: #E8F1F2;
+  }
+  sixth
+  :root{
+    primary: #001A23;
+    --white: #ffffff;
+    --black: #000000;
+    --secondary: orangered;
+    --teritary: orange;
+    --background: #ffa50021;
+    --card: #E8F1F2;
+  }
+  :root{
+
+  }
+  :root{
+
+  }
+  :root{
+
+  }
+  seventh
+  .seagreen {
+    --primary:#001A23;
+    --white: #ffffff;
+    --black:#000000;
+    --secondary:seagreen;
+    --teritary:#07b657;
+    --background:#B3EFB2;
+    --card:#E8F1F2;
+
+  }

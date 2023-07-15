@@ -1,0 +1,213 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Aboreto&family=Alkatra&family=Arya&family=Poppins&family=Roboto&family=Rozha+One&display=swap');
+:root {
+    --primary:#001A23;
+    --white: #ffffff;
+    --black:#000000;
+    --secondary:#31493C;
+    --teritary:#07b657;
+    --background:#B3EFB2;
+    --card:#E8F1F2;
+
+  }
+  /* themes  */
+  .black {
+    --primary:#001A23;
+    --white: #ffffff;
+    --black:#000000;
+    --secondary:black;
+    --teritary:#07b657;
+    --background:whitesmoke;
+    --card:#E8F1F2;
+
+  }  
+
+  .seagreen {
+    --primary:#001A23;
+    --white: #ffffff;
+    --black:#000000;
+    --secondary:seagreen;
+    --teritary:#07b657;
+    --background:#B3EFB2;
+    --card:#E8F1F2;
+
+  }
+  .blueviolet{
+    -primary: #001A23;
+    --white: #ffffff;
+    --black: #000000;
+    --secondary: blueviolet;
+    --teritary: blue;
+    --background: #f3ecfa;
+    --card: #E8F1F2;
+  }
+  .crimson{
+    -primary: #001A23;
+    --white: #ffffff;
+    --black: #000000;
+    --secondary: crimson;
+    --teritary: tomato;
+    --background: #ffebee;
+    --card: #E8F1F2;
+  }
+  .teal{
+    --primary: #001A23;
+    --white: #ffffff;
+    --black: #000000;
+    --secondary: teal;
+    --teritary: #0dcaf0;
+    --background: #07868629;
+    --card: #E8F1F2;
+  }
+  .orangered{
+    --primary: #001A23;
+    --white: #ffffff;
+    --black: #000000;
+    --secondary: orangered;
+    --teritary: orange;
+    --background: #ffa50021;
+    --card: #E8F1F2;
+  }
+  /* themes end */
+html{
+    font-size: 16px;
+}
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--background);
+}
+h1{
+    font-size: 2.5rem;
+    font-family: 'Aboreto', cursive;
+    font-weight:700;
+    line-height: 4rem;
+}
+h2{
+    font-size: 2rem;
+    font-family: 'verdana';
+    font-weight:700;
+}
+h3{
+    font-size: 1.8rem;
+    font-family: 'Rozha One', serif;
+    font-weight:500;
+}
+h4{
+    font-size: 1.8rem;
+    font-family: 'poppins';
+    font-weight:500;
+}
+p{
+    font-size: 1.5rem;
+    font-family: 'Lucida Sans';
+    color: var(--primary);
+}
+.mainbtn{
+    font-family: poppins;
+    background:var(--secondary);
+    border: none;
+    color: white;
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1.6rem;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 2rem;
+}
+.btn-dark{
+    font-family: 'Source Sans Pro', sans-serif;
+    background:var(--black);
+    color: white;
+    padding: 5px 15px;
+    text-align: center;
+    font-size: 1.6rem;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+.btn-dark:hover{
+    color:var(--black);
+    border:2px solid var(--black);
+    background: var(--white);
+}
+.mainbtn:hover{
+    color:var(--primary);
+    border:1px solid var(--secondary);
+    background: var(--white);
+}
+.nav-link{
+    color: white;
+}
+.nav-link{
+    color: white;
+}
+.nav-link:hover{
+    background-color: var(--background);
+    padding: 5px;
+    border-bottom:0.3rem solid white;
+}
+.b-divider{
+    width: 100%;
+    height: 1rem;
+    background: var(--teritary);
+}
+.option{
+    width:100%;
+    font-size: 1.5rem;
+    font-family: 'verdana';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.Qentry div>input:focus{
+    border-bottom: .2rem solid var(--secondary);
+    color:black;
+    font-family:Lobster ;
+    font-size: 1.2em;
+}
+.qcard{
+    background: var(--card);
+    max-width: 16rem;
+}
+.qcard:hover{
+    background:var(--white);
+}
+.topicList{
+    height:12rem;
+    overflow-y:auto;
+    display: none;
+    width:22rem;
+    position: absolute;
+    z-index:3;
+}
+#tsection.tshow .topicList{
+    display: block;
+}
+  .hcard{
+    background:var(--secondary);
+    color: white;
+    margin: 1rem;
+    box-shadow: 0 0 10px rgba(21, 153, 30, 0.08);
+}
+.hcard img{
+    width:5rem;
+    margin:1rem auto;
+}
+.hcard:hover{
+    background: white;
+    color: var(--secondary);
+} 
+.theme-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap:0.5rem;
+    margin:0.5rem;
+}
+.theme-list a {
+    height: 2rem;
+    width: 1rem;
+    border-radius: 50%;
+    margin: auto;
+}

@@ -1,0 +1,652 @@
+javascript
+function $(id) { return document.getElementById(id); }
+
+// test question
+let tquestions = [];
+
+// current question
+let cqno = 0;
+
+// user authentication 
+
+function chkLogIn(e) {
+    //   e.preventDefault();
+    console.log("its working")
+    let email = $('email').value;
+    let pass = $('pass').value;
+
+    let obj = {
+        'email': email,
+        'pass': pass
+    };
+    fetch("chkLogin", {
+        method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(obj)
+
+        /*    }).then(function(response) 
+           {return response.text().then(function(text) {console.log(text)})})  */
+    }).then(response => response.json())
+        .then(data => {
+            let st = '';
+            //   console.log(data['role']);
+            if (data.status != 0) {
+                $('logInLabel').innerHTML = "Invalid email or Password";
+            } else {
+                var myModalEl = document.getElementById('logIn');
+                var modal = bootstrap.Modal.getInstance(myModalEl)
+                modal.hide();
+
+                // $('header').innerHTML = data['header'];
+                $('role').value = data['role'];
+                $('uname').innerHTML = data['uname'];
+                $('logInBtn').parentElement.innerHTML = '<a href="logout"><button type="button" id="logOutBtn" class="btn btn-outline-light mx-3">Log Out</button></a>';
+                $('header').innerHTML = data['header'];
+            }
+        });
+};
+
+
+//----------------------------------
+
+//    theme  not working
+let colors = document.querySelectorAll('.theme-list a');
+
+colors.forEach(color => {
+    color.onclick = () => {
+        let background = color.style.background;
+        // let root = document.querySelector(':root');
+        // root.classList.add(background);
+        //  console.log(background)
+        document.querySelector(':root').className = background;
+        //   document.querySelector(':root').style.setProperty('--secondary',background);
+    }
+});
+
+//---------------------------
+
+// quiz section start  **
+
+// save quiz 
+
+function saveQuiz(e) {
+    e.preventDefault();
+    form = $('topicEntry');
+    fd = new FormData(form);
+    //   console.log(fd);
+    fdObj = {};
+    for (let [key, value] of fd) {
+        fdObj[key] = value;
+    };
+    //    console.log(fdObj);
+    fetch('saveQuiz', {
+        method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fdObj),
+    }).then(response => response.json())
+        .then(data => {
+            console.log("Saved");
+            //    form.reset();
+            getQuizList();
+        })
+
+}
+
+//----------------------------------
+
+  function getQuizList()  {
+
+    console.log(e)
+    let st = '';
+    fetch('getQuizList', {
+        method: 'POST', // or 'PUT'e
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        // body: JSON.stringify(fdObj),
+    }).then(response => response.json())
+        .then(data => {
+            //      console.log(data);
+
+            //   quizList.push(data);
+
+            data.forEach(element => {
+                //  console.log(element.moduleid);
+                st += ' <div id="card' + element.moduleid + '" class="card m-2 qcard">';
+                st += '<div class="card-body text-center">';
+                st += '<p class="card-text">';
+                st += element.mname;
+                st += '</p>';
+                st += '</div>';
+                st += '<div class="card-footer">';
+                st += '<span class="d-flex justify-content-between align-items-center" style="font-family:poppins;">';
+                st += '<button type="button" onclick= "startTest(' + element.moduleid + ')" class="btn btn-outline-success"><img src="assets/img/start.png" style="width: 1.5rem;" alt="">Start</button>';
+                st += '<?php if($role =="A" || $role=="F" ){ ?>';
+                st += '<button type="button" onclick= "editQuiz(' + element.moduleid + ')" class="btn btn-outline-success"><img src="assets/img/edit.png" style="width: 1.5rem;" alt=""> Edit</button>';
+
+                st += '<button type="button" onclick= "delQuiz(' + element.moduleid + ')" class="btn btn-outline-success"><img src="assets/img/bin.png" style="width: 1.5rem;" alt=""> Delete</button>';
+                st += '<?php } ?>';
+                st += '</span>';
+                st += '</div>';
+                st += ' </div>';
+
+                // search fucntion 
+                /*
+                const search = document.querySelector('#searchQuiz');
+                search.addEventListener('input', function (e) {
+                    let filter, i, textValue;
+                    filter = search.value.toUpperCase();
+                    const isVisible = element.mname.toUpperCase().includes(filter);
+                    if (isVisible == false) {
+                        $('card' + element.moduleid + '').style.display = "none";
+                    } else {
+                        $('card' + element.moduleid + '').style.display = "";
+                    }
+                });
+                */
+                // searchfunction end 
+            });
+          
+                $('listCard').innerHTML = st; 
+ 
+           
+
+
+        });
+}
+//    getQuizList();
+
+// -------------------
+
+//    delete quiz 
+
+
+function delQuiz(mid) {
+    mid = parseInt(mid);
+    //  console.log(mid);
+    obj = {
+        "mid": mid
+    };
+    fetch('delQuiz', {
+        method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(obj),
+    }).then(response => response.text())
+        .then(text => {
+            alert(text);
+            if (text == "Deleted") {
+                //   console.log(mid);
+                getQuizList();
+            }
+        });
+}
+
+
+//--------------
+function editQuiz(mid) {
+    moduleid = parseInt(mid);
+    // console.log(mid);
+    obj = {
+        "moduleid": moduleid
+    };
+
+    fetch('editQuiz', {
+        method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(obj),
+    }).then(async response => response.text())
+        .then(text => {
+            //    console.log(text);
+            $('quizEntry').innerHTML = text;
+            let modal = $('quizEntryBtn');
+            const myModal = new bootstrap.Modal(document.getElementById('quizEntry'));
+            myModal.show(modal);
+            getQuizList();
+            //     form.reset();
+
+        });
+}
+
+
+
+//--------
+
+
+// test section start
+
+
+function startTest(mid) {
+    mid = parseInt(mid);
+
+    obj = {
+        "mid": mid
+    };
+    fetch('getTest', {
+        method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(obj),
+    }).then(response => response.json())
+        .then(data => {
+            let modQuestions = data['ques'];
+            //   console.log(modQuestions);
+            // tquestions.push(modQuestions);
+            for (let i = 0; i < modQuestions.length; i++) {
+                tquestions.push(modQuestions[i]);
+            }
+            for (i = 0; i < tquestions.length; i++) {
+                tquestions[i]['sans'] = 0;
+            }
+            //  console.log(tquestions);
+            $('main').innerHTML = data['testPage'];
+            $('nofQuestion').innerHTML = tquestions.length;
+            showQues(0);
+            //    console.log(text);
+            //    $('main').innerHTML = text;
+        });
+
+}
+
+//-------------
+/*
+let tbl = $('tbl');
+let nofQuestion = 10;
+let tbl_cols = 10;
+let tbl_no_rows = parseInt(nofQuestion / tbl_cols);
+for (n = 0; n < tbl_no_rows; n++) {
+    let r = tbl.insertRow();
+    for (j = 1; j <= tbl_cols; j++) {
+        let c = r.insertCell();
+        let v = n * 10 + j;
+        c.innerText = (v < 10) ? "0" + (v) : v;
+
+    }
+}
+*/
+//-----------
+
+function showQues(id = 0) {
+    cqno += id;
+    //   console.log(cqno);
+    if (cqno == -1) {
+        cqno = 0;
+        alert("No prev. Question");
+
+    }
+    if (cqno == 10) {
+        cqno = 9;
+        alert("No further Question");
+    }
+    //   console.log(tquestions.length);
+    let pwidth = (cqno + 1) / tquestions.length * 100;
+    $('pbar').style.width = pwidth + '%';
+    $('qno').innerText = cqno + 1;
+    $('ques').innerText = tquestions[cqno]['questions'];
+    $('lblbtnradio1').innerText = tquestions[cqno]['opt1'];
+    $('btnradio1').checked = false;
+    $('lblbtnradio2').innerText = tquestions[cqno]['opt2'];
+    $('btnradio2').checked = false;
+    $('lblbtnradio3').innerText = tquestions[cqno]['opt3'];
+    $('btnradio3').checked = false;
+    $('lblbtnradio4').innerText = tquestions[cqno]['opt4'];
+    $('btnradio4').checked = false;
+    // if (id == -1) {
+    //     animate = document.getElementById('testContainer').classList.add('scale-out-left');
+    //     setTimeout(() => {
+    //         document.getElementById('testContainer').classList.remove('scale-out-left');
+    //     }, 600);
+    //     //     console.log('backbtn')
+    // };
+    // if (id == 1) {
+    //     animate = document.getElementById('testContainer').classList.add('scale-out-right');
+    //     setTimeout(() => {
+    //         document.getElementById('testContainer').classList.remove('scale-out-right');
+    //     }, 600);
+    //     //   console.log('forwardbtn')
+    // };
+}
+
+//------------
+
+function recAns(n) {
+    tquestions[cqno]['sans'] = n;
+}
+
+//-----
+
+function showResult() {
+    console.log("hii");
+    let resultSt = '';
+    resultSt += '<div class="d-flex align-items-center justify-content-center flex-wrap">';
+    resultSt += '<table class="table shadow-sm text-center table-success m-3 table-bordered">';
+    resultSt += '<thead>';
+    resultSt += '<tr>';
+    resultSt += '<th scope="col">';
+    resultSt += 'Question No';
+    resultSt += '</th>';
+    resultSt += '<th scope="col">';
+    resultSt += 'Question';
+    resultSt += '</th>';
+    resultSt += '</tr>';
+    resultSt += '</thead>';
+    resultSt += '<tbody class="table-group-divider">';
+
+    totc = 0;
+    totw = 0;
+    totus = 0;
+    for (i = 0; i < tquestions.length; i++) {
+        console.log(tquestions[i]['sans']);
+        if (tquestions[i]['sans'] == 0) {
+            totus++;
+            resultSt += '<tr>';
+            resultSt += '<th scope="row">';
+            resultSt += (i + 1);
+            resultSt += '</th>';
+            resultSt += '<th>';
+            resultSt += 'Unsolved';
+            resultSt += '</th>';
+            resultSt += '</tr>'
+        } else if (tquestions[i]['sans'] == tquestions[i]['ans']) {
+            totc++;
+            resultSt += '<tr>';
+            resultSt += '<th scope="row">';
+            resultSt += (i + 1);
+            resultSt += '</th>';
+            resultSt += '<th>';
+            resultSt += 'Correct';
+            resultSt += '</th>';
+            resultSt += '</tr>'
+            // resultSt = resultSt + "Q.No. " + (i+1) + " : Correct Answer!<br>";
+        } else {
+            totw++;
+            resultSt += '<tr>';
+            resultSt += '<th scope="row">';
+            resultSt += (i + 1);
+            resultSt += '</th>';
+            resultSt += '<th>';
+            resultSt += 'Worng Answer';
+            resultSt += '</th>';
+            resultSt += '</tr>'
+            //       resultSt = resultSt + "Q.No. " + (i+1) + " : Wrong Answer!<br>";
+
+        }
+    }
+    resultSt += '</tbody>';
+    resultSt += '</table>';
+    resultSt += '<table class="table  shadow-sm text-center table-success m-3 table-bordered">';
+    resultSt += '<thead>';
+    resultSt += '<tr>';
+    resultSt += '<th scope="col">';
+    resultSt += 'Total Correct';
+    resultSt += '</th>';
+    resultSt += '<th scope="col">';
+    resultSt += 'Total Wrong';
+    resultSt += '</th>';
+    resultSt += '<th scope="col">';
+    resultSt += 'Total Unsolved';
+    resultSt += '</th>';
+    resultSt += '</tr>';
+    resultSt += '</thead>';
+    resultSt += '<tbody class="table-group-divider">';
+    resultSt += '<tr>';
+    resultSt += '<th scope="row">';
+    resultSt += totc;
+    resultSt += '</th>';
+    resultSt += '<th scope="row">';
+    resultSt += totw;
+    resultSt += '</th>';
+    resultSt += '<th scope="row">';
+    resultSt += totus;
+    resultSt += '</th>';
+    resultSt += '</tr>'
+    resultSt += '</tbody>';
+    resultSt += '</table>';
+    resultSt += '</div>';
+    // resultSt = resultSt + "<br>Total Correct :" + totc;
+    // resultSt = resultSt + "<br>Total Wrong :" + totw;
+    // resultSt = resultSt + "<br>Total Unsolved :" + totus;
+    document.getElementById("testContainer").innerHTML = resultSt;
+    // draw Chart
+    google.charts.load('current', {
+        'packages': ['corechart']
+    });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        // Set Data
+        const data = google.visualization.arrayToDataTable([
+            ['Question', 'numbers'],
+            ['Correct Question', totc],
+            ['Wrong', totw],
+            ['Unsolved', totus],
+        ]);
+
+        // Set Options
+        const options = {
+            title: 'Quiz Result'
+        };
+        // Draw
+        document.getElementById('chartSection').style = 'width:100%; max-width:600px; height:500px;';
+        const chart = new google.visualization.PieChart(document.getElementById('chartSection'));
+        chart.draw(data, options);
+
+    }
+    // chart End
+
+}
+
+//-------------
+
+
+// question section start
+
+function saveQuestion(e) {
+    e.preventDefault();
+    form = $('qentry');
+    fd = new FormData(form);
+    fdObj = {};
+
+    for (let [key, value] of fd) {
+        fdObj[key] = value;
+    }
+    console.log(fdObj);
+    fetch('saveQuestion', {
+        method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fdObj),
+    }).then(response => response.json())
+        .then(data => {
+            console.log("Saved");
+            form.reset();
+            getQuestionList();
+        })
+
+
+}
+
+//------------
+
+let getTopicList = () => {
+    let list = '';
+    fetch('getQuizList', {
+        method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        // body: JSON.stringify(fdObj),
+    }).then(response => response.json())
+        .then(data => {
+            //    console.log(data);
+            data.forEach(element => {
+                list += '<a href="#" class="aplha list-group-item list-group-item-action">';
+                list += '<span>';
+                list += element.moduleid;
+                list += '</span>';
+                list += ' - ' + element.mname;
+                list += '</a>';
+            });
+
+            $('options').innerHTML = list;
+
+
+            const topic = document.querySelector('#tsection');
+            const selTopic = document.querySelector('.select-topic');
+            const TopicId = document.querySelector('#topicId');
+            const search = document.querySelector('#tsearch');
+            const options = document.querySelector('.optGroup');
+            const optionsList = document.querySelectorAll('.optGroup a');
+
+            let a = options.getElementsByTagName("a");
+
+            selTopic.addEventListener('click', function () {
+                topic.classList.toggle('tshow');
+            });
+            optionsList.forEach(function (optionListSingle) {
+                optionListSingle.addEventListener('click', function () {
+                    text = this.textContent;
+                    let mid = this.childNodes[0].innerText;
+                    $('moduleid').value = mid;
+                    console.log(mid);
+                    TopicId.value = text;
+                    topic.classList.remove('tshow');
+                });
+            });
+            search.addEventListener('input', function () {
+                let filter, i, textValue;
+                filter = search.value.toUpperCase();
+
+                //  a = options.getElementsByTagName("a");
+
+                for (i = 0; i < a.length; i++) {
+                    acount = a[i];
+                    textValue = acount.textContent || acount.innerText;
+                    //  console.log(textValue)
+                    if (textValue.toUpperCase().indexOf(filter) > -1) {
+                        a[i].style.display = "";
+
+                    } else {
+                        a[i].style.display = "none";
+                    }
+                }
+            });
+
+        });
+}
+// getTopicList();
+
+//------------
+
+let getQuestionList = () => {
+    let st = '';
+    fetch('getQuestionList', {
+        method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }).then(response => response.json())
+        .then(data => {
+            data.forEach(element => {
+                //   console.log(element.qid);
+                st += '<div id="card' + element.qid + '" style="height:22rem" class="card m-2 qcard">';
+                st += '<div style="overflow-y: auto;" class="card-body">';
+                st += ' <p class="card-text">';
+                st += element.questions;
+                st += '</p>';
+                st += '</div>';
+                st += '<div class="card-footer">';
+                st += '<?php if($role =="A" || $role=="F" ){ ?>';
+                st += ' <span class="d-flex justify-content-between align-items-center" style="font-family:poppins;">';
+                st += '<button type="button"  onclick="editQuestion(' + element.qid + ')"  class="btn btn-outline-success"><img src="assets/img/edit.png" style="width: 1.5rem;" alt=""> Edit</button>';
+                st += ' <button type="button" onclick="delQuestion(' + element.qid + ')" class="btn btn-outline-success"><img src="assets/img/bin.png" style="width: 1.5rem;"  alt=""> Delete</button>';
+                st += '</span>';
+                st += '<?php } ?>';
+                st += ' </div>';
+                st += ' </div>';
+
+                // search start
+                /*
+                const search = document.querySelector('#searchQuestion');
+                search.addEventListener('input', function (e) {
+                    let filter;
+                    filter = search.value.toUpperCase();
+                    const isVisible = element.questions.toUpperCase().includes(filter);
+                    if (isVisible == false) {
+                        $('card' + element.qid + '').style.display = "none";
+                    } else {
+                        $('card' + element.qid + '').style.display = "";
+                    }
+                });
+
+                */
+                // search end
+            });
+            $('questionList').innerHTML = st;
+        });
+}
+// getQuestionList();
+
+//---------------------
+
+
+
+function delQuestion(qid) {
+    qid = parseInt(qid);
+    console.log(qid);
+    obj = {
+        "qid": qid
+    };
+    fetch('delQuestion', {
+        method: 'POST',// or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(obj),
+    }).then(response => response.text())
+        .then(text => {
+            alert(text);
+            if (text == "Deleted") {
+                console.log(qid);
+                getQuestionList();
+            }
+        });
+}
+
+//---------------------
+function editQuestion(qid) {
+    qid = parseInt(qid);
+    console.log(qid);
+    obj = {
+        "qid": qid
+    };
+
+    fetch('editQuestion', {
+        method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(obj),
+    }).then(response => response.text())
+        .then(text => {
+            console.log(text);
+            $('questionEntry').innerHTML = text;
+            let modal = $('questionEntryBtn');
+            const myModal = new bootstrap.Modal(document.getElementById('questionEntry'));
+            myModal.show(modal);
+            getQuestionList();
+            //     form.reset();
+
+        });
+}
+
+//--------------------------
